@@ -22,18 +22,45 @@ export default function App() {
   const [teamForm,setTeamForm]=useState(initialTeamForm);
 
   const onNameChange = event => {
-    setTeamForm({...teamList, name: event.target.value})
+    // setTeamForm({...teamList, name: event.target.value})
+    setTeamForm({
+      name: event.target.value,
+      email:teamForm.email,
+      role:teamForm.role,
+    })
   };
 
   const onEmailChange = event => {
-    setTeamForm({...teamList, email: event.target.value})
+    // setTeamForm({...teamList, email: event.target.value})
+    setTeamForm({
+      name: teamForm.name,
+      email: event.target.value,
+      role:teamForm.role,
+    })
   };
 
   const onRoleChange = event => {
-    setTeamForm({...teamList, role: event.target.value})
+    // setTeamForm({...teamList, role: event.target.value})
+    setTeamForm({
+      name: teamForm.name,
+      email: teamForm.role,
+      role:event.target.value,
+    })
   };
 
 
+  const onFormSubmit = e =>{
+   e.preventDefault();
+   const newMember ={
+     id: uuid(),
+     name:teamForm.name,
+     email:teamForm.email,
+     role:teamForm.role,
+   };
+   const newTeamList = teamList.concat(newMember);
+   setTeamList(newTeamList);
+   setTeamForm(initialTeamForm);
+  };
 
   return (
     <div className="App">
@@ -41,6 +68,7 @@ export default function App() {
       onNameChange={onNameChange}
       onEmailChange={onEmailChange}
       onRoleChange={onRoleChange}
+      onFormSubmit={onFormSubmit}
 
       teamForm={teamForm}
   
@@ -60,47 +88,63 @@ export default function App() {
 
 function Form(props){
 
-  const {onNameChange, onEmailChange, onRoleChange}= props;
-  const{name,email,role} = props.teamForm
+  const { onNameChange, onEmailChange, onRoleChange, onFormSubmit }= props;
+  const{ name, email, role} = props.teamForm;
+
+  const isDisabled = () => {
+    if (!name || !email || !role) {
+      return true;
+    }
+    return false;
+  };
 
   return(
-    <form>
-      <label htmlFor='nameInput'>Name</label>
-      <input
-      value={name}
-      onChange={onNameChange}
-      id='nameInput'
-      type='text'
-      
-      />
-
-      <label></label>
-      <input
-      value={email}
-      onChange={onEmailChange}
-      id='emailInput'
-      type='text'
-      
-      />
-
-      <label></label>
-      <input
-      value={role}
-      onChange={onRoleChange}
-      id='roleInput'
-      type='text'
-      
-      />
-
-      <button>
-        submit
-      </button>
-    </form>
+    <div>
+      <form>
+        <div>
+          <label htmlFor='nameInput'>Name</label>
+          <input
+            value={name}
+            onChange={onNameChange}
+            id='nameInput'
+            type='text'
+          
+          />
+        </div>
+        
+        <div>
+          <label htmlFor='emailInput'>Email</label>
+          <input
+            value={email}
+            onChange={onEmailChange}
+            id='emailInput'
+            type='text'
+          
+          />
+        </div>
+        
+        <div>
+          <label htmlFor='roleInput'>Role</label>
+          <input
+            value={role}
+            onChange={onRoleChange}
+            id='roleInput'
+            type='text'
+          
+          />
+        </div>
+        
+        <button
+          disabled={isDisabled()}
+          onClick={onFormSubmit}
+        >
+          submit
+        </button>
+      </form>
+    </div>
+    
 
   )
-
-
-
 }
 
 
